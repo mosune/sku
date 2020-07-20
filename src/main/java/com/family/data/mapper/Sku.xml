@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.data.dao.SkuDao">
+
+	<sql id="sql_where">
+		<where>
+			<if test="categoryId != null"> and s.category_id = #{categoryId} </if>
+			<if test="status != null"> and s.status = #{status} </if>
+			<if test="startTime != null"> and s.change_time >= #{startTime} </if>
+			<if test="endTime != null"> and s.change_time &lt;= #{endTime} </if>
+			<if test="name != null and name != ''"> and s.name like CONCAT('%',#{name},'%') </if>
+			 and delete_tag = 0
+		</where>
+	</sql>
+
+	<insert id="insert">
+		INSERT INTO sku (
+            version,
+            create_time,
+            last_update_time,
+            name,
+            category_id,
+            shop_name,
+            brand,
+            url,
+            status,
+            buy_time,
+            product_time,
+            expired_time,
+            change_time,
+            pic_url,
+            delete_tag,
+            price,
+            star
+        ) values (
+            0,
+            now(),
+            now(),
+            #{sku.name},
+            #{sku.categoryId},
+            #{sku.shopName},
+            #{sku.brand}
+            #{sku.url},
+            #{sku.status},
+            #{sku.buyTime},
+            #{sku.productTime},
+            #{sku.expiredTime}
+            #{sku.changeTime},
+            #{sku.picUrl},
+            0,
+            #{sku.price},
+            #{sku.star}
+		)
+	</insert>
+
+	<update id="update">
+		update sku set
+			version = version + 1,
+			last_update_time = now(),
+			name=#{sku.name},
+			category_id=#{sku.categoryId},
+			pic_url=#{sku.picUrl},
+			<if test="sku.shopName != null and sku.shopName != ''"> shop_name=#{sku.shopName}, </if>
+			<if test="sku.brand != null and sku.brand != ''"> brand=#{sku.brand}, </if>
+			<if test="sku.url != null and sku.url != ''"> url=#{sku.url}, </if>
+			<if test="sku.status != null"> status=#{sku.status}, </if>
+			<if test="sku.buyTime != null"> buy_time=#{sku.buyTime}, </if>
+			<if test="sku.productTime != null"> product_time=#{sku.productTime}, </if>
+			<if test="sku.expiredTime != null"> expired_time=#{sku.expiredTime}, </if>
+			<if test="sku.deleteTag != null"> delete_tag=#{sku.deleteTag}, </if>
+			<if test="sku.price != null"> price=#{sku.price}, </if>
+			<if test="sku.star != null"> star=#{sku.star}, </if>
+			change_time=#{sku.changeTime}
+		where id = #{sku.id} and version = #{sku.version}
+	</update>
+
+	<select id="count" resultType="java.lang.Integer">
+		select count(*) from sku as s
+		<include refid="sql_where"/>
+	</select>
+
+	<select id="list" resultType="com.family.data.entity.dto.SkuDto">
+		select
+			s.id as id,
+			s.version as version,
+			s.change_time as changeTime,
+			s.name as name,
+			c.name as cateName,
+			s.star as star,
+			s.pic_url as picUrl,
+			s.url as url,
+			s.shop_name as shopName,
+			s.buy_time as buyTime
+		from sku as s left join category c on s.category_id = c.id
+		<include refid="sql_where"/>
+		order by star desc, last_update_time desc
+		limit #{offset}, #{limit}
+	</select>
+
+	<select id="getData" resultType="com.family.data.entity.dto.SkuDto">
+		select
+			s.id as id,
+			s.version as version,
+			s.name as name,
+			c.name as cateName,
+			s.brand as brand,
+			s.shop_name as shopName,
+			s.url as url,
+			s.status sa status,
+			s.buy_time as buyTime,
+			s.product_time as productTime,
+			s.expired_time as expiredTime,
+			s.change_time sa changeTime,
+			s.pic_url sa picUrl,
+			s.star as star,
+			s.price as price
+		from sku as s left join category c on s.category_id = c.id
+		where s.id = #{id} and delete_tag = 0
+	</select>
+
+	<select id="getDatas" resultType="com.family.data.entity.dto.SkuDto">
+		select
+			id,
+			version,
+			status
+		from sku where id in
+		<foreach collection="list" item="item" close=")" open="(" separator=",">#{item}</foreach>
+	</select>
+
+	<update id="batchUpdate">
+		<foreach collection="list" separator=";" item="item">
+			update sku set
+				version = version + 1,
+				<if test="item.deleteTag != null"> delete_tag=#{item.deleteTag}, </if>
+				<if test="item.status != null"> status=#{item.status}, </if>
+				last_update_time = now()
+			where id = #{item.id} and version = #{item.version}
+		</foreach>
+	</update>
+
+</mapper>

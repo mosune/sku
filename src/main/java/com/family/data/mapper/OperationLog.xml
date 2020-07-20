@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.data.dao.OperationLogDao">
+
+    <select id="list" resultType="com.family.data.entity.dto.OperationLogDto">
+        select
+            s.name as skuId,
+            l.status_before as beforeStatus,
+            l.status_after as afterStatus,
+            l.remark as remark,
+            l.create_time as createTime
+        from log l left join sku s on l.sku_id = s.id
+        order by l.create_time desc
+        limit #{limit}, #{offset}
+    </select>
+
+    <insert id="batchInsert">
+        insert into log (create_time, sku_id, status_before, status_after, remark) values
+        <foreach collection="list" item="item" separator=",">
+            (now(), #{item.skuId}, #{item.beforeStatus}, #{item.afterStatus}, #{item.remark})
+        </foreach>
+    </insert>
+
+    <select id="count" resultType="int">
+        select count(*) from log where sku_id = #{skuId}
+    </select>
+</mapper>
