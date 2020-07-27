@@ -9,7 +9,7 @@
 			<if test="startTime != null"> and s.change_time >= #{startTime} </if>
 			<if test="endTime != null"> and s.change_time &lt;= #{endTime} </if>
 			<if test="name != null and name != ''"> and s.name like CONCAT('%',#{name},'%') </if>
-			 and delete_tag = 0
+			 and s.delete_tag = 0
 		</where>
 	</sql>
 
@@ -39,12 +39,12 @@
             #{sku.name},
             #{sku.categoryId},
             #{sku.shopName},
-            #{sku.brand}
+            #{sku.brand},
             #{sku.url},
             #{sku.status},
             #{sku.buyTime},
             #{sku.productTime},
-            #{sku.expiredTime}
+            #{sku.expiredTime},
             #{sku.changeTime},
             #{sku.picUrl},
             0,
@@ -71,7 +71,7 @@
 			<if test="sku.price != null"> price=#{sku.price}, </if>
 			<if test="sku.star != null"> star=#{sku.star}, </if>
 			change_time=#{sku.changeTime}
-		where id = #{sku.id} and version = #{sku.version}
+		where id = #{sku.id}
 	</update>
 
 	<select id="count" resultType="java.lang.Integer">
@@ -93,7 +93,7 @@
 			s.buy_time as buyTime
 		from sku as s left join category c on s.category_id = c.id
 		<include refid="sql_where"/>
-		order by star desc, last_update_time desc
+		order by s.star desc, s.last_update_time desc
 		limit #{offset}, #{limit}
 	</select>
 
@@ -101,17 +101,18 @@
 		select
 			s.id as id,
 			s.version as version,
-			s.name as name,
+			s.category_id as categoryId,
 			c.name as cateName,
 			s.brand as brand,
 			s.shop_name as shopName,
 			s.url as url,
-			s.status sa status,
+			s.name as name,
+			s.status as status,
 			s.buy_time as buyTime,
 			s.product_time as productTime,
 			s.expired_time as expiredTime,
-			s.change_time sa changeTime,
-			s.pic_url sa picUrl,
+			s.change_time as changeTime,
+			s.pic_url as picUrl,
 			s.star as star,
 			s.price as price
 		from sku as s left join category c on s.category_id = c.id
@@ -134,7 +135,7 @@
 				<if test="item.deleteTag != null"> delete_tag=#{item.deleteTag}, </if>
 				<if test="item.status != null"> status=#{item.status}, </if>
 				last_update_time = now()
-			where id = #{item.id} and version = #{item.version}
+			where id = #{item.id}
 		</foreach>
 	</update>
 

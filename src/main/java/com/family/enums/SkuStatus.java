@@ -6,8 +6,11 @@ package com.family.enums;
  **/
 public enum SkuStatus {
 
-    USE(0, "使用中"),
-    EXPIRED(1, "失效");
+    UN_USE(0, "未使用"),
+    USE(1, "正使用"),
+    USED(2, "使用完"),
+    EXPIRED(3, "已过期"),
+    DROP(4, "已废弃");
 
     private Integer type;
     private String message;
@@ -23,6 +26,15 @@ public enum SkuStatus {
 
     public String getMessage() {
         return message;
+    }
+
+    public static String getName(Integer type) {
+        for (SkuStatus skuStatus : SkuStatus.values()) {
+            if (skuStatus.getType().equals(type)) {
+                return skuStatus.getMessage();
+            }
+        }
+        return "";
     }
 
 }

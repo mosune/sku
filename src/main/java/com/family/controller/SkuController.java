@@ -3,14 +3,18 @@ package com.family.controller;
 import com.family.data.entity.Category;
 import com.family.data.entity.Sku;
 import com.family.data.entity.dto.SkuDto;
+import com.family.data.so.SkuSo;
 import com.family.data.so.SkuUpdateSo;
+import com.family.dispatch.CategoryDispatch;
 import com.family.dispatch.SkuDispatch;
 import com.family.exception.FamilyException;
 import com.family.util.DateUtil;
 import com.family.util.Page;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +36,9 @@ public class SkuController {
 	@Autowired
 	private SkuDispatch skuDispatch;
 
+	@Autowired
+	private CategoryDispatch categoryDispatch;
+
 	/**
 	 * 列表
 	 * @return
@@ -39,32 +46,18 @@ public class SkuController {
 	@RequestMapping("index.do")
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView("sku/index");
-		List<Category> list = new ArrayList<>();
-
-		Category category = Category.builder().name("衣服").id(1L).build();
-		Category category2 = Category.builder().name("书本").id(1L).build();
-		list.add(category);
-		list.add(category2);
-
-		modelAndView.addObject("categorys", list);
+		modelAndView.addObject("categorys", categoryDispatch.queryAll(3));
 		return modelAndView;
 	}
 
 	/**
-	 * 列表
+	 * 添加页面
 	 * @return
 	 */
 	@RequestMapping("addPage.do")
 	public ModelAndView addPage() {
 		ModelAndView modelAndView = new ModelAndView("sku/add");
-		List<Category> list = new ArrayList<>();
-
-		Category category = Category.builder().name("衣服").id(1L).build();
-		Category category2 = Category.builder().name("书本").id(1L).build();
-		list.add(category);
-		list.add(category2);
-
-		modelAndView.addObject("categorys", list);
+		modelAndView.addObject("categorys", categoryDispatch.queryAll(3));
 		return modelAndView;
 	}
 
@@ -89,24 +82,39 @@ public class SkuController {
 	}
 
 	/**
-	 * 删除或者修改
+	 * 添加或者修改
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("addOrUpdate.do")
-	public Integer addOrUpdate(Sku sku) throws FamilyException {
-		if (StringUtils.isEmpty(sku.getName())) {
+	public Integer addOrUpdate(@RequestBody SkuSo skuSo) throws FamilyException, ParseException {
+		if (StringUtils.isEmpty(skuSo.getName())) {
 			throw new FamilyException("名称不能为空");
 		}
-		if (sku.getCategoryId() == null) {
+		if (skuSo.getCategoryId() == null) {
 			throw new FamilyException("类目一定要选");
 		}
-		if (StringUtils.isEmpty(sku.getPicUrl())) {
+		if (StringUtils.isEmpty(skuSo.getPicUrl())) {
 			throw new FamilyException("图片不能为空");
 		}
-		if (sku.getChangeTime() == null) {
-			throw new FamilyException("更换时间不能为空");
+		if (skuSo.getStatus() == null) {
+			throw new FamilyException("状态不能为空");
 		}
+		Sku sku = Sku.builder()
+				.id(skuSo.getId())
+				.name(skuSo.getName())
+				.categoryId(skuSo.getCategoryId())
+				.buyTime(DateUtil.getDate2(skuSo.getBuyTime()))
+				.changeTime(DateUtil.getDate2(skuSo.getChangeTime()))
+				.productTime(DateUtil.getDate(skuSo.getProductTime()))
+				.expiredTime(DateUtil.getDate(skuSo.getExpiredTime()))
+				.picUrl(skuSo.getPicUrl())
+				.shopName(skuSo.getShopName())
+				.brand(skuSo.getBrand())
+				.url(skuSo.getUrl())
+				.status(skuSo.getStatus())
+				.star(skuSo.getStar())
+				.build();
 		return skuDispatch.addOrUpdate(sku);
 	}
 
@@ -114,10 +122,21 @@ public class SkuController {
 	 * 获取数据
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping("getData.do")
-	public SkuDto getData(Long id) {
-		return skuDispatch.getData(id);
+	@RequestMapping("updatePage.do")
+	public ModelAndView getData(Long id) {
+		ModelAndView mv = new ModelAndView("/sku/add");
+		mv.addObject("sku", skuDispatch.getData(id));
+
+		List<Category> list = new ArrayList<>();
+
+		Category category = Category.builder().name("衣服").id(1L).build();
+		Category category2 = Category.builder().name("书本").id(1L).build();
+		list.add(category);
+		list.add(category2);
+
+		mv.addObject("categorys", list);
+
+		return mv;
 	}
 
 	/**
@@ -133,9 +152,14 @@ public class SkuController {
 	 * 修改状态
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value = "updateStatus.do")
-	public void updateStatus(List<SkuUpdateSo> list) throws FamilyException {
-		skuDispatch.updateStatus(list);
+	public int updateStatus(@RequestBody SkuUpdateSo skuUpdateSo) throws FamilyException {
+		if (CollectionUtils.isEmpty(skuUpdateSo.getIds())) {
+			throw new FamilyException("请选择物品");
+		}
+		skuDispatch.updateStatus(skuUpdateSo);
+		return 1;
 	}
 
 }

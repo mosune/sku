@@ -26,6 +26,8 @@
     -->
     <mvc:annotation-driven />
 
+    <bean id="exceptionHandler" class="com.family.exception.DefaultExceptionHandler" />
+
     <!-- controller中返回视图的配置 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
         <!-- action中return的页面的前缀 -->

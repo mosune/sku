@@ -1,7 +1,8 @@
 package com.family.data.dao;
 
 import com.family.data.entity.Category;
-import com.family.util.Page;
+import com.family.data.so.CateSo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,4 +23,18 @@ public interface CategoryDao {
      */
     List<Category> getTopLevel(Map<String, Object> map);
 
+    /**
+     * 查询所有类目
+     * @return
+     * @param level
+     */
+    List<Category> queryAll(@Param("level") Integer level);
+
+    Category getData(@Param("id") Long id);
+
+    int insert(@Param("so") CateSo cateSo);
+
+    int update(@Param("so") CateSo cateSo);
+
+    int getSkuCount(@Param("id") Long id);
 }

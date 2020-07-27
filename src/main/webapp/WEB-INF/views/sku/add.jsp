@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page isELIgnored="false"  language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ include file="../base.jsp" %>
@@ -34,7 +34,7 @@
             <div class="form-group row">
                 <label for="name" class="col-sm-2 col-form-label"><span style="color: red">*</span>物品名称</label>
                 <div class="col-sm-4">
-                    <input type="" class="form-control" id="name">
+                    <input type="" class="form-control" id="name" value="<c:if test="${sku!=null}">${sku.name}</c:if>"/>
                 </div>
             </div>
             <div class="form-group row">
@@ -43,7 +43,12 @@
                     <select id="categoryId" class="custom-select input-s-lg form-control">
                         <option value="">类目</option>
                         <c:forEach items="${categorys}" var="item">
-                            <option value="${item.id}">${item.name}</option>
+                            <c:if test="${sku != null && sku.categoryId == item.id}">
+                                <option value="${item.id}" selected>${item.name}</option>
+                            </c:if>
+                            <c:if test="${sku == null || (sku != null && sku.categoryId != item.id)}">
+                                <option value="${item.id}">${item.name}</option>
+                            </c:if>
                         </c:forEach>
                     </select>
                 </div>
@@ -51,23 +56,23 @@
             <div class="form-group row">
                 <label for="buyDate" class="col-sm-2 col-form-label">购买时间</label>
                 <div class="col-sm-4">
-                    <input type="text" name="buyDateStr" id="buyDateStr" class="form-control" />
-                    <input type="hidden" id = "buyDate" name="buyDate" class="form-control" />
+                    <input type="text" name="buyDateStr" id="buyDateStr" class="form-control" value="<c:if test="${sku!=null && sku.buyTime != null}"><fmt:formatDate value="${sku.buyTime}" pattern="yyyy-MM-dd"/></c:if>" />
+                    <input type="hidden" id = "buyDate" name="buyDate" class="form-control" value="<c:if test="${sku!=null && sku.buyTime != null}"><fmt:formatDate value="${sku.buyTime}" pattern="yyyy-MM-dd"/></c:if>"" />
                 </div>
             </div>
             <div class="form-group row">
                 <label for="changeDate" class="col-sm-2 col-form-label">更换时间</label>
                 <div class="col-sm-4">
-                    <input type="text" name="changeDateStr" id="changeDateStr" class="form-control" />
-                    <input type="hidden" id = "changeDate" name="changeDate" class="form-control" />
+                    <input type="text" name="changeDateStr" id="changeDateStr" class="form-control" value="<c:if test="${sku!=null && sku.changeTime != null}"><fmt:formatDate value="${sku.changeTime}" pattern="yyyy-MM-dd"/></c:if>" />
+                    <input type="hidden" id = "changeDate" name="changeDate" class="form-control" value="<c:if test="${sku!=null && sku.changeTime != null}"><fmt:formatDate value="${sku.changeTime}" pattern="yyyy-MM-dd"/></c:if>" />
                 </div>
             </div>
             <div class="form-group row">
                 <label for="date2" class="col-sm-2 col-form-label">有效期</label>
                 <div class="col-sm-4">
-                    <input type="text" placeholder="更换时间" name="date2" id="date2" class="input-lg form-control float-right">
-                    <input type="hidden" id = "startTime" name="startTime" class="form-control" />
-                    <input type="hidden" id = "endTime" name="endTime" class="form-control" />
+                    <input type="text" placeholder="有效期" name="date2" id="date2" class="input-lg form-control float-right" value="<c:if test='${sku!=null && sku.productTime != null}'><fmt:formatDate value='${sku.productTime}' pattern='yyyy-MM-dd'/>至<fmt:formatDate value='${sku.expiredTime}' pattern="yyyy-MM-dd"/></c:if>"/>
+                    <input type="hidden" id = "startTime" name="startTime" class="form-control" value="<c:if test='${sku!=null && sku.productTime != null}'><fmt:formatDate value='${sku.productTime}' pattern="yyyy-MM-dd HH:mm:ss"/></c:if>" />
+                    <input type="hidden" id = "endTime" name="endTime" class="form-control" value="<c:if test='${sku!=null && sku.expiredTime != null}'><fmt:formatDate value='${sku.expiredTime}' pattern='yyyy-MM-dd HH:mm:ss'/></c:if>"/>
                 </div>
             </div>
             <div class="form-group row">
@@ -79,37 +84,37 @@
             <div class="form-group row">
                 <label for="shopName" class="col-sm-2 col-form-label">店铺</label>
                 <div class="col-sm-4">
-                    <input class="form-control" id="shopName">
+                    <input class="form-control" id="shopName" value="<c:if test="${sku!=null && sku.shopName != null}">${sku.shopName}</c:if>" />
                 </div>
             </div>
             <div class="form-group row">
                 <label for="brand" class="col-sm-2 col-form-label">品牌</label>
                 <div class="col-sm-4">
-                    <input class="form-control" id="brand">
+                    <input class="form-control" id="brand" value="<c:if test="${sku!=null && sku.brand != null}">${sku.brand}</c:if>"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="url" class="col-sm-2 col-form-label">链接</label>
                 <div class="col-sm-4">
-                    <input class="form-control" id="url">
+                    <input class="form-control" id="url" value="<c:if test="${sku!=null && sku.url != null}">${sku.url}</c:if>"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="status" class="col-sm-2 col-form-label"><span style="color: red">*</span>状态</label>
                 <div class="col-sm-4">
                     <select id="status" class="custom-select input-s-lg form-control">
-                        <option value="5">5</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1</option>
+                        <option value="0" <c:if test="${sku!=null && sku.status == 0}">selected</c:if>>未使用</option>
+                        <option value="1" <c:if test="${sku!=null && sku.status == 1}">selected</c:if>>正使用</option>
+                        <option value="2" <c:if test="${sku!=null && sku.status == 2}">selected</c:if>>使用完</option>
+                        <option value="3" <c:if test="${sku!=null && sku.status == 3}">selected</c:if>>已过期</option>
+                        <option value="4" <c:if test="${sku!=null && sku.status == 4}">selected</c:if>>已废弃</option>
                     </select>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="star" class="col-sm-2 col-form-label">喜爱星级</label>
                 <div class="col-sm-4">
-                    <input type="number" name="your_awesome_parameter" id="star" class="rating" value="" data-min="1" data-max="5" />
+                    <input type="number" name="your_awesome_parameter" id="star" class="rating" value="<c:if test="${sku!=null && sku.star != null}">${sku.star}</c:if>" data-min="1" data-max="5" />
                 </div>
             </div>
             <div class="form-group row">
@@ -120,7 +125,8 @@
                     </div>
                 </div>
             </div>
-            <input id="src" name="src" type="hidden">
+            <input id="src" name="src" type="hidden" value="<c:if test="${sku != null && sku.picUrl != null}">${sku.picUrl}</c:if>">
+            <input id="dataId" type="hidden" value="<c:if test="${sku != null}">${sku.id}</c:if>">
         </div>
     </div>
 </div>
@@ -141,6 +147,11 @@
             showUpload: false,             // 不显示上传按钮，选择后直接上传
             previewClass:"uploadPreview",
             enctype: 'multipart/form-data',
+            <c:if test="${sku != null && sku.picUrl != null}">
+                initialPreview: [
+                    "<img src='${sku.picUrl}' />"
+                ],
+            </c:if>
         })
         .on("change", function() {
             // 清除掉上次上传的图片
@@ -254,77 +265,41 @@
         $("#date2").val(picker.startDate.format('YYYY-MM-DD')+" 至 "+picker.endDate.format('YYYY-MM-DD'));
     });
 
-    var _goodsTable;
-    $(document).ready(function() {
-        _goodsTable = $('#goodsTable').bootstrapTable({
-            sidePagination:'server',//设置为服务器端分页
-            url: '<%=root%>/goods/list.do',
-            method: 'post',
-            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
-            striped: true,
-            pagination: true,
-            pageList: [10,30,50],
-            showToggle: true,
-            showRefresh: true,
-            showColumns: true,
-            queryParams: queryParams,
-            sortable: true,
-            idField: 'id',
-            columns: [
-                {field: 'opt',width: '15%', title: '选择', align: 'center',
-                    formatter: function(value, row){
-                        return '<input type="checkbox" value="'+row.id+'" name="goodsChoose" />';
-                    }},
-                {field: 'name',width: '15%', title: '名称', align: 'center'},
-                {field: 'cateName', width: '10%', title: '类别', align: 'center'},
-                {field: 'salePrice', width: '10%', title: '售卖价格（元）', align: 'center'},
-                {field: 'originalPrice', width: '10%', title: '成本价格（元）', align: 'center'},
-                {field: 'currentStock', width: '10%', title: '当前库存', align: 'center'},
-                {field: 'remark',width: '20%', title: '描述', align: 'center'},
-                {field: 'num',width: '15%', title: '数量', align: 'center',
-                    formatter: function(value, row){
-                        return '<input type="text" id="'+row.id+'" />';
-                    }}
-            ],
-            toolbar: '#toolbar'
-        });
-    });
-    function queryParams(params) {
-        params.nameLike = $('#nameLike').val();
-        return params;
-    }
-    function search() {
-        _goodsTable.bootstrapTable("refresh");
-    }
     function addOrder() {
-        var json = [];
-        $('input[name="goodsChoose"]:checked').each(function(){
-            var j = {};
-            j.key = $(this).val();
-            j.value = $("#"+$(this).val()+"").val();
-            if (j.value === '' || j.value == null) {
-                toastr.error("请输入数量");
-                die;
-            }
-            json.push(j);
-        });
-        var a = JSON.stringify(json);
+        var id = $("#dataId").val();
+        var para={"name": $("#name").val(),
+            "categoryId":$("#categoryId").val(),
+            "buyTime":$("#buyDate").val(),
+            "changeTime":$("#changeDate").val(),
+            "productTime":$("#startTime").val(),
+            "expiredTime":$("#endTime").val(),
+            "picUrl":$("#src").val(),
+            "shopName":$("#shopName").val(),
+            "brand":$("#brand").val(),
+            "url":$("#url").val(),
+            "status":$("#status").val(),
+            "star":$("#star").val(),
+            "id":id};
         $.ajax({
-            url: "<%=root%>order/addOrder.do",
+            url: "<%=root%>sku/addOrUpdate.do",
             type: "post",
-            data: {order:a,
-                type:1},
             async: false,
-            dataType: "json",
+            dataType:'json',
+            contentType:'application/json;character:utf-8',
+            data:JSON.stringify(para),
             success:function(data) {
                 if (data.msg) {
                     toastr.error(data.msg);
                 } else {
-                    toastr.info("添加成功");
+                    if (id) {
+                        toastr.info("修改成功");
+                    } else {
+                        toastr.info("添加成功");
+                    }
+                    window.location.href = "<%=root%>/sku/index.do";
                 }
             }
         });
-        window.location.href = "<%=root%>/order/index.do";
     }
 </script>
 </html>

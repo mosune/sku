@@ -4,14 +4,14 @@
 
     <select id="list" resultType="com.family.data.entity.dto.OperationLogDto">
         select
-            s.name as skuId,
             l.status_before as beforeStatus,
             l.status_after as afterStatus,
             l.remark as remark,
             l.create_time as createTime
-        from log l left join sku s on l.sku_id = s.id
+        from log l
+        where l.sku_id = #{skuId}
         order by l.create_time desc
-        limit #{limit}, #{offset}
+        limit #{offset}, #{limit}
     </select>
 
     <insert id="batchInsert">

@@ -51,8 +51,7 @@ public interface SkuDispatch {
 
     /**
      * 修改状态
-     * @param list
      * @return
      */
-    void updateStatus(List<SkuUpdateSo> list) throws FamilyException;
+    void updateStatus(SkuUpdateSo skuUpdateSo) throws FamilyException;
 }

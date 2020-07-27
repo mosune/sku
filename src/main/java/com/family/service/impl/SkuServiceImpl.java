@@ -5,7 +5,6 @@ import com.family.data.dao.SkuDao;
 import com.family.data.entity.OperationLog;
 import com.family.data.entity.Sku;
 import com.family.data.so.SkuUpdateSo;
-import com.family.enums.DeleteTag;
 import com.family.service.SkuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,16 +43,16 @@ public class SkuServiceImpl implements SkuService {
     public void delete(List<SkuUpdateSo> list) {
         List<Sku> skus = new ArrayList<>(list.size() * 2);
         for (SkuUpdateSo skuUpdateSo : list) {
-            skus.add(Sku.builder().id(skuUpdateSo.getId()).version(skuUpdateSo.getVersion()).deleteTag(DeleteTag.YES.getType()).build());
+//            skus.add(Sku.builder().id(skuUpdateSo.getId()).version(skuUpdateSo.getVersion()).deleteTag(DeleteTag.YES.getType()).build());
         }
         skuDao.batchUpdate(skus);
     }
 
     @Override
-    public void updateStatus(List<SkuUpdateSo> list, List<OperationLog> operationLogs) {
-        List<Sku> skus = new ArrayList<>(list.size() * 2);
-        for (SkuUpdateSo skuUpdateSo : list) {
-            skus.add(Sku.builder().id(skuUpdateSo.getId()).version(skuUpdateSo.getVersion()).status(skuUpdateSo.getStatus()).build());
+    public void updateStatus(SkuUpdateSo skuUpdateSo, List<OperationLog> operationLogs) {
+        List<Sku> skus = new ArrayList<>(skuUpdateSo.getIds().size() * 2);
+        for (Long id : skuUpdateSo.getIds()) {
+            skus.add(Sku.builder().id(id).status(skuUpdateSo.getStatus()).build());
         }
         skuDao.batchUpdate(skus);
         operationLogDao.batchInsert(operationLogs);

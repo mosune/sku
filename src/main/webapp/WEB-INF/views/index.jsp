@@ -25,7 +25,7 @@
                             </span>
                         </a>
                     </div>
-                    <div class="logo-element">DRP</div>
+                    <div class="logo-element">Family</div>
                 </li>
                 <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
                     <span class="ng-scope">gcgyyt</span>
@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="J_menuItem">
+                    <a href="<%=root%>/category/index.do" class="J_menuItem">
                         <i class="fa fa-life-saver"></i>
                         <span class="nav-label">类目管理</span>
                     </a>

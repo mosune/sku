@@ -52,31 +52,31 @@ public class SkuDispatchImpl implements SkuDispatch {
 
     @Override
     public void delete(List<SkuUpdateSo> list) throws FamilyException {
-        checkData(list);
+//        checkData(list);
         skuService.delete(list);
     }
 
     @Override
-    public void updateStatus(List<SkuUpdateSo> list) throws FamilyException {
-        List<SkuDto> skuDtos = checkData(list);
+    public void updateStatus(SkuUpdateSo skuUpdateSo) throws FamilyException {
+        List<SkuDto> skuDtos = checkData(skuUpdateSo);
         List<OperationLog> operationLogs = new ArrayList<>();
         Map<Long, Integer> map = skuDtos.stream().collect(Collectors.toMap(SkuDto::getId, SkuDto::getStatus));
-        for (SkuUpdateSo skuUpdateSo : list) {
-            operationLogs.add(OperationLog.builder().skuId(skuUpdateSo.getId()).remark(skuUpdateSo.getRemark()).beforeStatus(map.get(skuUpdateSo.getId())).afterStatus(skuUpdateSo.getStatus()).build());
+        for (Long id : skuUpdateSo.getIds()) {
+            operationLogs.add(OperationLog.builder().skuId(id).remark(skuUpdateSo.getRemark()).beforeStatus(map.get(id)).afterStatus(skuUpdateSo.getStatus()).build());
         }
-        skuService.updateStatus(list, operationLogs);
+        skuService.updateStatus(skuUpdateSo, operationLogs);
     }
 
     /**
      * 检查数据
-     * @param list
+     * @param skuUpdateSo
      * @return
      * @throws FamilyException
      */
-    private List<SkuDto> checkData(List<SkuUpdateSo> list) throws FamilyException {
-        List<Long> ids = list.stream().map(SkuUpdateSo::getId).collect(Collectors.toList());
+    private List<SkuDto> checkData(SkuUpdateSo skuUpdateSo) throws FamilyException {
+        List<Long> ids = skuUpdateSo.getIds();
         List<SkuDto> skuDtos = skuDao.getDatas(ids);
-        if (skuDtos.size() != list.size()) {
+        if (skuDtos.size() != skuUpdateSo.getIds().size()) {
             throw new FamilyException("数据不匹配");
         }
         return skuDtos;

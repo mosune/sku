@@ -7,6 +7,7 @@
     <groupId>com.family</groupId>
     <artifactId>sku</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <srping.version>4.3.12.RELEASE</srping.version>
@@ -163,10 +164,15 @@
             <artifactId>commons-io</artifactId>
             <version>1.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>3.0.0</version>
+        </dependency>
 
     </dependencies>
     <build>
-        <finalName>drp</finalName>
+        <finalName>sku</finalName>
         <plugins>
             <!-- 内嵌tomcat -->
             <plugin>
@@ -228,7 +234,7 @@
                 <includes>
                     <include>**/*.xml</include>
                 </includes>
-                <filtering>false</filtering>
+                <filtering>true</filtering>
             </resource>
         </resources>
     </build>

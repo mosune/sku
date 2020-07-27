@@ -16,4 +16,6 @@ public class SkuDto extends Sku {
 
     private String cateName;
 
+    private String statusStr;
+
 }

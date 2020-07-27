@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.data.dao.CategoryDao">
+
+    <insert id="insert">
+        insert into category(version, create_time, last_update_time, name, father_id, level) values (0, now(), now(), #{so.name}, #{so.fatherId}, #{so.level})
+    </insert>
+
+    <update id="update">
+        update category set last_update_time = now(), name = #{so.name} where id = #{so.id}
+    </update>
+
+    <select id="queryAll" resultType="com.family.data.entity.Category">
+        select id,name as name, father_id as fatherId from category
+        <where>
+            <if test="level != null">
+                level = #{level}
+            </if>
+        </where>
+    </select>
+
+    <select id="getData" resultType="com.family.data.entity.Category">
+        select id, name as name, father_id as fatherId, level as level from category
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="getSkuCount" resultType="java.lang.Integer">
+        select third.id from category third inner join category second on third.father_id = second.id on second.id = #{id}
+        select  from category third inner join category second on third.father_id = second.id inner join category first on second.father_id = #{id}
+    </select>
+</mapper>

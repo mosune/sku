@@ -29,9 +29,9 @@ public interface SkuService {
 
     /**
      * 修改装填
-     * @param list
+     * @param skuUpdateSo
      * @param operationLogs
      * @return
      */
-    void updateStatus(List<SkuUpdateSo> list, List<OperationLog> operationLogs);
+    void updateStatus(SkuUpdateSo skuUpdateSo, List<OperationLog> operationLogs);
 }

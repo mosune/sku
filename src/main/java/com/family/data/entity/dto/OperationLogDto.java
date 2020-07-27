@@ -10,4 +10,8 @@ public class OperationLogDto extends OperationLog {
 
     private String name;
 
+    private String beforeStr;
+
+    private String afterStr;
+
 }

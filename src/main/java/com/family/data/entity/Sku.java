@@ -37,6 +37,6 @@ public class Sku {
 	private Date createTime;
 	private Date updateTime;
 	private BigDecimal price;
-	private BigDecimal star;
+	private Integer star;
 
 }
