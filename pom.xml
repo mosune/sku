@@ -10,7 +10,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <srping.version>4.3.12.RELEASE</srping.version>
+        <srping.version>6.0.0</srping.version>
         <shiro.version>1.2.3</shiro.version>
         <jackson.version>2.7.4</jackson.version>
     </properties>
